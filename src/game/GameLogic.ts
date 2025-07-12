@@ -1,22 +1,38 @@
-import type { PetStatus, PetPhase } from '../types/game';
+import type { PetStatus, PetPhase, SaveData } from '../types/game';
+import { Storage } from '../utils/Storage';
 
 export class GameLogic {
     private status: PetStatus;
     private phase: PetPhase;
 
-    // 時間管理用の内部カウンター (ms)
     private timeSinceLastDecrease: number;
     private timeInGoodCondition: number;
+    private timeSinceLastSave: number;
 
     constructor() {
-        this.status = {
-            hungry: 100,
-            clean: 100,
-            mood: 100,
-        };
-        this.phase = 'egg';
+        const saveData = Storage.load();
+
+        if (saveData) {
+            this.status = saveData.status;
+            this.phase = saveData.phase;
+            // オフライン中の経過時間を計算してステータスを減らす
+            const offlineMillis = Date.now() - saveData.lastPlayed;
+            const offlineDecreaseCount = Math.floor(offlineMillis / 10000);
+            this.status.hungry = Math.max(0, this.status.hungry - offlineDecreaseCount);
+            this.status.clean = Math.max(0, this.status.clean - offlineDecreaseCount);
+            this.status.mood = Math.max(0, this.status.mood - offlineDecreaseCount);
+        } else {
+            this.status = {
+                hungry: 100,
+                clean: 100,
+                mood: 100,
+            };
+            this.phase = 'egg';
+        }
+
         this.timeSinceLastDecrease = 0;
         this.timeInGoodCondition = 0;
+        this.timeSinceLastSave = 0;
     }
 
     public getStatus(): PetStatus {
@@ -41,16 +57,33 @@ export class GameLogic {
 
     public update(delta: number) {
         this.timeSinceLastDecrease += delta;
+        this.timeSinceLastSave += delta;
 
-        // 10秒ごとに各ステータスが1減少する
         if (this.timeSinceLastDecrease >= 10000) {
             this.status.hungry = Math.max(0, this.status.hungry - 1);
             this.status.clean = Math.max(0, this.status.clean - 1);
             this.status.mood = Math.max(0, this.status.mood - 1);
-            this.timeSinceLastDecrease -= 10000; // 経過時間をリセット（余りを保持）
+            this.timeSinceLastDecrease -= 10000;
+        }
+
+        // 5秒ごとにオートセーブ
+        if (this.timeSinceLastSave >= 5000) {
+            this.saveGame();
+            this.timeSinceLastSave = 0;
         }
 
         this.checkEvolution(delta);
+    }
+
+    private saveGame() {
+        const saveData: SaveData = {
+            version: 1,
+            phase: this.phase,
+            status: this.status,
+            lastPlayed: Date.now(),
+        };
+        Storage.save(saveData);
+        console.log('Game saved!');
     }
 
     private checkEvolution(delta: number) {
@@ -59,11 +92,10 @@ export class GameLogic {
         if (isGoodCondition) {
             this.timeInGoodCondition += delta;
         } else {
-            // 条件が満たされなくなったらリセット
             this.timeInGoodCondition = 0;
         }
 
-        if (this.phase === 'egg' && this.timeInGoodCondition >= 30000) { // 30秒
+        if (this.phase === 'egg' && this.timeInGoodCondition >= 30000) {
             this.phase = 'baby';
             console.log('Evolved to baby!');
         }
