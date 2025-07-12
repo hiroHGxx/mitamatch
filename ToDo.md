@@ -4,13 +4,13 @@
 
 ## フェーズ1: 準備 & 技術検証 (PoC)
 
-- [ ] ⬜️ **1-1. 環境構築:**
-    - [ ] `npm create vite@latest mitamatch -- --template vanilla-ts` を実行
-    - [ ] `npm install phaser` でPhaserをインストール
-    - [ ] `npm install vitest -D` でVitestをインストール
-- [ ] ⬜️ **1-2. PoC① (UI検証):**
-    - [ ] `index.html` と `main.ts` を編集し、PhaserのCanvas上にHTMLボタンをオーバーレイ表示する。
-    - [ ] ボタンクリック時に、Phaserの`console.log`が実行されることを確認する。
+- [x] ✅ **1-1. 環境構築:**
+    - [x] `npm create vite@latest mitamatch -- --template vanilla-ts` を実行
+    - [x] `npm install phaser` でPhaserをインストール
+    - [x] `npm install vitest -D` でVitestをインストール
+- [x] ✅ **1-2. PoC① (UI検証):**
+    - [x] `index.html` と `main.ts` を編集し、PhaserのCanvas上にHTMLボタンをオーバーレイ表示する。
+    - [x] ボタンクリック時に、Phaserの`console.log`が実行されることを確認する。
 - [ ] ⬜️ **1-3. PoC② (アセット検証):**
     - [ ] `public/assets/sprites` に `egg.png` と `baby.png` を配置する。
     - [ ] シーン上で、クリックなどのイベントをトリガーにして、表示スプライトを `egg.png` から `baby.png` に切り替えられることを確認する。
