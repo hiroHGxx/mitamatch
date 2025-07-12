@@ -37,16 +37,16 @@ export class UIController {
         uiContainer.appendChild(footer);
 
         // ボタンの生成とイベントリスナーの設定
-        this.createButton(footer, 'ごはん', 'feed');
-        this.createButton(footer, 'そうじ', 'clean');
-        this.createButton(footer, 'あそぶ', 'play');
-        this.createButton(footer, 'シェア', 'share');
+        this.createButton(footer, 'ごはん', 'feed', 'bg-blue-500 hover:bg-blue-700');
+        this.createButton(footer, 'そうじ', 'clean', 'bg-green-500 hover:bg-green-700');
+        this.createButton(footer, 'あそぶ', 'play', 'bg-yellow-500 hover:bg-yellow-700');
+        this.createButton(footer, 'シェア', 'share', 'bg-gray-500 hover:bg-gray-700');
     }
 
-    private createButton(parent: HTMLElement, text: string, eventName: string) {
+    private createButton(parent: HTMLElement, text: string, eventName: string, className: string) {
         const button = document.createElement('button');
         button.innerText = text;
-        button.className = 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded';
+        button.className = `${className} text-white font-bold py-2 px-4 rounded`;
         button.addEventListener('click', () => {
             this.scene.events.emit(eventName);
         });
@@ -61,5 +61,9 @@ export class UIController {
                 <div class="text-white">Mood: ${status.mood}</div>
             `;
         }
+    }
+
+    public showFunFact(fact: string) {
+        alert(fact);
     }
 }

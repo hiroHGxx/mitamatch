@@ -95,9 +95,25 @@ export class GameLogic {
             this.timeInGoodCondition = 0;
         }
 
-        if (this.phase === 'egg' && this.timeInGoodCondition >= 30000) {
+        if (this.phase === 'egg' && this.timeInGoodCondition >= 30000) { // 30秒
             this.phase = 'baby';
             console.log('Evolved to baby!');
         }
+    }
+
+    public triggerFunFact(): string | null {
+        const funFacts = [
+            '布団が吹っ飛んだ！',
+            'アルミ缶の上にあるミカン',
+            '猫が寝込んだ',
+            'イルカはいるか？',
+            'パンダの好きなパンは？…フライパン！'
+        ];
+
+        // 20%の確率でイベント発生
+        if (Math.random() < 0.2) {
+            return funFacts[Math.floor(Math.random() * funFacts.length)];
+        }
+        return null;
     }
 }
