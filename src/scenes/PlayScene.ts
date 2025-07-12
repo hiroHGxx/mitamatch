@@ -1,7 +1,9 @@
 import Phaser from 'phaser';
+import { UIController } from '../ui/UIController';
 
 export class PlayScene extends Phaser.Scene {
     private pet?: Phaser.GameObjects.Sprite;
+    private uiController?: UIController;
 
     constructor() {
         super({ key: 'PlayScene' });
@@ -14,6 +16,9 @@ export class PlayScene extends Phaser.Scene {
 
     create() {
         this.pet = this.add.sprite(400, 300, 'egg').setInteractive();
+
+        this.uiController = new UIController(this);
+        this.uiController.createUI();
 
         // PoCのクリックイベントは一旦コメントアウト
         // this.input.on('pointerdown', () => {
