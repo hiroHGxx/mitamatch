@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 
 export class UIController {
     private scene: Scene;
+    private metersContainer?: HTMLDivElement;
 
     constructor(scene: Scene) {
         this.scene = scene;
@@ -24,25 +25,41 @@ export class UIController {
         uiContainer.appendChild(header);
 
         // メーター
-        const meters = document.createElement('div');
-        meters.id = 'meters-container';
-        meters.className = 'absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-4';
-        meters.innerHTML = `
-            <div class="text-white">Hungry: 100</div>
-            <div class="text-white">Clean: 100</div>
-            <div class="text-white">Mood: 100</div>
-        `;
-        uiContainer.appendChild(meters);
+        this.metersContainer = document.createElement('div');
+        this.metersContainer.id = 'meters-container';
+        this.metersContainer.className = 'absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-4';
+        uiContainer.appendChild(this.metersContainer);
+        this.updateMeters({ hungry: 100, clean: 100, mood: 100 }); // 初期表示
 
         // フッター（操作ボタン）
         const footer = document.createElement('footer');
         footer.className = 'absolute bottom-0 left-0 w-full p-4 flex justify-around pointer-events-auto';
-        footer.innerHTML = `
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">ごはん</button>
-            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">そうじ</button>
-            <button class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">あそぶ</button>
-            <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">シェア</button>
-        `;
         uiContainer.appendChild(footer);
+
+        // ボタンの生成とイベントリスナーの設定
+        this.createButton(footer, 'ごはん', 'feed');
+        this.createButton(footer, 'そうじ', 'clean');
+        this.createButton(footer, 'あそぶ', 'play');
+        this.createButton(footer, 'シェア', 'share');
+    }
+
+    private createButton(parent: HTMLElement, text: string, eventName: string) {
+        const button = document.createElement('button');
+        button.innerText = text;
+        button.className = 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded';
+        button.addEventListener('click', () => {
+            this.scene.events.emit(eventName);
+        });
+        parent.appendChild(button);
+    }
+
+    public updateMeters(status: { hungry: number, clean: number, mood: number }) {
+        if (this.metersContainer) {
+            this.metersContainer.innerHTML = `
+                <div class="text-white">Hungry: ${status.hungry}</div>
+                <div class="text-white">Clean: ${status.clean}</div>
+                <div class="text-white">Mood: ${status.mood}</div>
+            `;
+        }
     }
 }
