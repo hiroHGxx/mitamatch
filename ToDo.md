@@ -11,9 +11,9 @@
 - [x] ✅ **1-2. PoC① (UI検証):**
     - [x] `index.html` と `main.ts` を編集し、PhaserのCanvas上にHTMLボタンをオーバーレイ表示する。
     - [x] ボタンクリック時に、Phaserの`console.log`が実行されることを確認する。
-- [ ] ⬜️ **1-3. PoC② (アセット検証):**
-    - [ ] `public/assets/sprites` に `egg.png` と `baby.png` を配置する。
-    - [ ] シーン上で、クリックなどのイベントをトリガーにして、表示スプライトを `egg.png` から `baby.png` に切り替えられることを確認する。
+- [x] ✅ **1-3. PoC② (アセット検証):**
+    - [x] `public/assets/sprites` に `egg.png` と `baby.png` を配置する。
+    - [x] シーン上で、クリックなどのイベントをトリガーにして、表示スプライトを `egg.png` から `baby.png` に切り替えられることを確認する。
 
 ## フェーズ2: MVP（最小実行可能プロダクト）実装
 
