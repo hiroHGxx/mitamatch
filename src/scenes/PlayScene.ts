@@ -36,15 +36,76 @@ export class PlayScene extends Phaser.Scene {
     private setupEventListeners() {
         this.events.on('feed', () => {
             this.gameLogic.feed();
+            this.triggerEvent();
         });
 
         this.events.on('clean', () => {
             this.gameLogic.clean();
+            this.triggerEvent();
         });
 
         this.events.on('play', () => {
             this.gameLogic.play();
+            this.triggerEvent();
         });
+
+        this.events.on('share', () => {
+            this.shareGame();
+        });
+    }
+
+    private shareGame() {
+        this.game.renderer.snapshot(async (image: Phaser.Display.Color | HTMLImageElement) => {
+            if (!(image instanceof HTMLImageElement)) {
+                alert('スクリーンショットの作成に失敗しました。');
+                return;
+            }
+
+            // スナップショットからBlobを作成するために一時的なCanvasを使用
+            const canvas = document.createElement('canvas');
+            canvas.width = image.width;
+            canvas.height = image.height;
+            const context = canvas.getContext('2d');
+            if (!context) {
+                alert('スクリーンショットの作成に失敗しました。');
+                return;
+            }
+            context.drawImage(image, 0, 0);
+
+            canvas.toBlob(async (blob) => {
+                if (!blob) {
+                    alert('スクリーンショットの作成に失敗しました。');
+                    return;
+                }
+
+                const file = new File([blob], 'mitamatch-screenshot.png', { type: 'image/png' });
+                const shareData = {
+                    title: 'ミタマっち',
+                    text: 'ミタマっちで遊んでるよ！ #ミタマっち',
+                    files: [file],
+                };
+
+                if (navigator.canShare && navigator.canShare(shareData)) {
+                    try {
+                        await navigator.share(shareData);
+                    } catch (err) {
+                        if ((err as Error).name !== 'AbortError') {
+                            console.error('Share failed:', err);
+                            alert('共有に失敗しました。');
+                        }
+                    }
+                } else {
+                    alert('このブラウザでは共有機能を利用できません。');
+                }
+            }, 'image/png');
+        });
+    }
+
+    private triggerEvent() {
+        const fact = this.gameLogic.triggerFunFact();
+        if (fact) {
+            this.uiController.showFunFact(fact);
+        }
     }
 
     private updateUI() {
