@@ -1,24 +1,29 @@
 import Phaser from 'phaser';
 
 class PocScene extends Phaser.Scene {
+    private pet?: Phaser.GameObjects.Sprite;
+
     constructor() {
         super({ key: 'PocScene' });
     }
 
     preload() {
-        // ここでアセットを読み込む（今回はなし）
+        this.load.image('egg', 'assets/sprites/egg.png');
+        this.load.image('baby', 'assets/sprites/baby.png');
     }
 
     create() {
-        this.add.text(10, 10, 'Phaser is running!', { color: '#ffffff' });
+        this.pet = this.add.sprite(400, 300, 'egg').setInteractive();
 
-        const actionButton = document.getElementById('action-button');
-        if (actionButton) {
-            actionButton.addEventListener('click', () => {
-                console.log('Action button was clicked!');
-                this.add.text(10, 50, 'Button clicked!', { color: '#00ff00' });
-            });
-        }
+        this.input.on('pointerdown', () => {
+            if (this.pet?.texture.key === 'egg') {
+                this.pet.setTexture('baby');
+                console.log('Evolved to baby!');
+            } else {
+                this.pet?.setTexture('egg');
+                console.log('Reverted to egg!');
+            }
+        });
     }
 }
 
