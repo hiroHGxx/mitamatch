@@ -45,4 +45,26 @@ describe('GameLogic', () => {
         gameLogic.play();
         expect(gameLogic.getStatus().mood).toBe(100);
     });
+
+    describe('evolution', () => {
+        it('should not evolve from egg to baby if conditions are met for less than 30 seconds', () => {
+            const gameLogic = new GameLogic();
+            gameLogic['status'] = { hungry: 95, clean: 95, mood: 95 }; // 条件を満たす
+
+            // 29秒経過
+            gameLogic.update(29000);
+
+            expect(gameLogic.getPhase()).toBe('egg');
+        });
+
+        it('should evolve from egg to baby if conditions are met for 30 seconds', () => {
+            const gameLogic = new GameLogic();
+            gameLogic['status'] = { hungry: 95, clean: 95, mood: 95 }; // 条件を満たす
+
+            // 30秒経過
+            gameLogic.update(30000);
+
+            expect(gameLogic.getPhase()).toBe('baby');
+        });
+    });
 });

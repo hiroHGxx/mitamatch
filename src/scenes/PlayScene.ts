@@ -27,25 +27,35 @@ export class PlayScene extends Phaser.Scene {
         this.updateUI();
     }
 
+    update(time: number, delta: number) {
+        this.gameLogic.update(delta);
+        this.updateUI();
+        this.updatePetSprite();
+    }
+
     private setupEventListeners() {
         this.events.on('feed', () => {
             this.gameLogic.feed();
-            this.updateUI();
         });
 
         this.events.on('clean', () => {
             this.gameLogic.clean();
-            this.updateUI();
         });
 
         this.events.on('play', () => {
             this.gameLogic.play();
-            this.updateUI();
         });
     }
 
     private updateUI() {
         const status = this.gameLogic.getStatus();
         this.uiController.updateMeters(status);
+    }
+
+    private updatePetSprite() {
+        const currentPhase = this.gameLogic.getPhase();
+        if (this.pet && this.pet.texture.key !== currentPhase) {
+            this.pet.setTexture(currentPhase);
+        }
     }
 }
