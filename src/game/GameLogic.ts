@@ -1,4 +1,4 @@
-import { PetStatus } from '../types/game.d';
+import type { PetStatus } from '../types/game';
 
 export class GameLogic {
     private status: PetStatus;
